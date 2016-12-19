@@ -4,12 +4,12 @@ LDAP authentication is one of the most popular authentication mechanism around t
 Along with LDAP Support, Spring Security also provides several other feature which is required by enterprise java application including SSL Security, encryption of passwords and session timeout facilities.
 
 
-This project contains both Ldap authentication and spring embedded authentication
-1) To enable LDAP authentication uncomment <import resource="SpringSecurityLdap-servlet.xml"/> in SpringSecuritybase-servlet.xml
-2) To enable embedded LDAP authentication uncomment <import resource="SpringSecurityEmbedded-servlet-servlet.xml"/> in SpringSecuritybase-servlet.xml.For embedded LDAP there is sample ldif file which is at resources directory,you can modify users based on your requirment.
+This project contains both **Ldap authentication** and **spring embedded LDAP authentication**
+  1. To enable LDAP authentication uncomment <import resource="SpringSecurityLdap-servlet.xml"/> in SpringSecuritybase-servlet.xml
+  2. To enable embedded LDAP authentication uncomment <import resource="SpringSecurityEmbedded-servlet-servlet.xml"/> in SpringSecuritybase-servlet.xml.For embedded LDAP there is sample ldif file which is at resources directory,you can modify users based on your requirment.
 
 
-Build and Deploy :
+##### H4 Build and Deploy :
 
 mvn clean install
 
