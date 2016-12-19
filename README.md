@@ -9,7 +9,7 @@ This project contains both **Ldap authentication** and **spring embedded LDAP au
   2. To enable embedded LDAP authentication uncomment <import resource="SpringSecurityEmbedded-servlet-servlet.xml"/> in SpringSecuritybase-servlet.xml.For embedded LDAP there is sample ldif file which is at resources directory,you can modify users based on your requirment.
 
 
-##### H4 Build and Deploy :
+##### Build and Deploy :
 
 mvn clean install
 
