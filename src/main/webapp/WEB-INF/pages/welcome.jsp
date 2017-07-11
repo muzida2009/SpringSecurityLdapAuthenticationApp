@@ -12,6 +12,7 @@ Ext.define('voLte.view.main.MainController', {
        		id : 'ov',
             title : '概览',
 	            xtype: 'oVPanel',
+		    autoDestroy:true,
 	            closable: true
 	        });
 		tabpanel.setActiveTab(newTab);
@@ -153,9 +154,10 @@ Ext.define('voLte.view.main.MainController', {
 	           		id : r.raw.id,
 	                title : r.raw.text,
        	            xtype: 'oVPanel',
+		    		autoDestroy:true,
        	            closable: true
        	        });
-				tabpanel.setActiveTab(newTab);
+			tabpanel.setActiveTab(newTab);
 	    	}else{
 	    		tabpanel.setActiveTab(n);
 	    	}
@@ -165,6 +167,7 @@ Ext.define('voLte.view.main.MainController', {
 					id : r.raw.id,
 	                title : r.raw.text,
 	   	            xtype: 'mPCPanel',
+			    	autoDestroy:true,
 	   	            closable: true
 	   	        });
 				tabpanel.setActiveTab(newTab);
@@ -177,6 +180,7 @@ Ext.define('voLte.view.main.MainController', {
 		           		id : r.raw.id,
 		                title : r.raw.text,
 		   	            xtype: 'uSPanel',
+				    	autoDestroy:true,
 		   	            closable: true
 		   	        });
 					tabpanel.setActiveTab(newTab);
