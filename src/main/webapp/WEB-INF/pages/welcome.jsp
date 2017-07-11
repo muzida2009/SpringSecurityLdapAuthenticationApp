@@ -1,15 +1,225 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>HelloWorld page</title>
-</head>
-<body>
-    Greeting : ${greeting}
-    <br/>
-    <h3>This is a welcome page!!!</h3>
+Ext.define('voLte.view.main.MainController', {
+    extend: 'Ext.app.ViewController',
 
-    Click here for <a href="<c:url value="/login" />">Login</a>.
-</body>
-</html>
+    alias: 'controller.main',
+    
+    init: function(view) {
+    	gv_mainCtr = this;
+    	gv_mpcMapList = [];
+    	
+    	var tabpanel = this.lookupReference('tabpanel');
+    	var newTab = tabpanel.add({
+       		id : 'ov',  
+            title : '概览', 
+            xtype: 'oVPanel',
+            autoDestroy:true,
+            closable: true
+	        });
+		tabpanel.setActiveTab(newTab);
+		
+		sessionStorage.menuCollapsed = false;
+		sessionStorage.trendExpand = true;
+    },
+    fn_checkLogin: function () {
+    	var loggedIn = sessionStorage.getItem("LoggedIn");
+    	if(loggedIn == undefined) 
+    		window.location.href = '../views/login.jsp' 
+    },
+    onClickLogout: function () {
+    	sessionStorage.removeItem('LoggedIn');
+    	window.location.href = '../views/login.jsp' 
+    },
+    panel_main_onResize: function () {
+    	this.getView().updateLayout();
+    },
+    tree_left_onCollapse: function () {
+    	//us map
+    	if(!isEmpty(usMap)){
+    		$('#map').css("width",document.body.clientWidth*0.45);
+        	usMap.resize();
+    	}
+    	//mpc map
+    	if(!isEmpty(gv_mpcMapList)){
+    		if(sessionStorage.trendExpand == 'true'){
+    			$(".mapContainer").css("width",document.body.clientWidth*0.465);
+    		}else{
+    			$(".mapContainer").css("width",document.body.clientWidth*0.95);
+    		}
+    		for(var i=0,len = gv_mpcMapList.length; i < len; i++){
+    			gv_mpcMapList[i].myMap.resize();
+    		}
+    	}
+    	sessionStorage.menuCollapsed = true;
+    },
+    tree_right_onExpand: function () {
+    	//us map
+    	if(!isEmpty(usMap)){
+    		$('#map').css("width",document.body.clientWidth*0.4);
+        	usMap.resize();
+    	}
+    	//mpc map
+    	if(!isEmpty(gv_mpcMapList)){
+    		if(sessionStorage.trendExpand == 'true'){
+    			$(".mapContainer").css("width",document.body.clientWidth*0.41);
+    		}else{
+    			$(".mapContainer").css("width",document.body.clientWidth*0.8);
+    		}
+    		for(var i=0,len = gv_mpcMapList.length; i < len; i++){
+    			gv_mpcMapList[i].myMap.resize();
+    		}
+    	}
+    	sessionStorage.menuCollapsed = false;
+    },
+    fn_menuFilter: function () {
+    	var treeStore = this.getStore('treeStore');
+    	
+//    	session menulist filter
+    	var chilNodes = [];
+    	for(var i=0,le=menulist.length; i<le; i++){
+    		
+	    		if(menulist[i] == '概览'){
+		    			chilNodes.push({ text: '概览', id:'ov', expanded: false, leaf: true, children: [] 
+		        		});
+	        	}else if(menulist[i] == 'KQI指标统计分析'){
+		        		chilNodes.push({ text: 'KQI指标统计分析', id:'st', expanded: false, children: [
+				        		                        			    	                { text: '接入性指标', expanded: true,children: [
+				        		                        										    	                { text: 'VoLte接通率', leaf: true },
+				        		                        										    	                { text: 'VoLte始呼接通时延', leaf: true}
+				        		                        									    	                ] 
+				        		                        									    	                },
+				        		                        			    	                { text: '移动性指标', expanded: true,children: [
+				        		                        										    	                { text: 'SRVCC切换成功率', leaf: true },
+				        		                        										    	                { text: 'SRVCC切换时延', leaf: true}
+				        		                        									    	                ] 
+				        		                        									    	                },
+			                    									    	                { text: '保持性指标', expanded: true,children: [
+				        		                        										    	                { text: 'VoLte掉话率', leaf: true },
+				        		                        										    	                { text: 'VoLte应答率', leaf: true}
+				        		                        									    	                ] 
+				        		                        									    	                },
+			                    									    	                { text: '附着', expanded: true,children: [
+				        		                        										    	                { text: 'Attach成功率', leaf: true }
+				        		                        									    	                ] 
+				        		                        									    	                },
+			                    									    	                { text: '注册', expanded: true,children: [
+				        		                        										    	                { text: 'IMS注册成功率', leaf: true }
+				        		                        									    	                ] 
+				        		                        									    	                }
+				        		                        		    	                ] 
+		        		  });
+	        	}else if(menulist[i] == 'MPC定界'){
+		        		chilNodes.push({ text: 'MPC定界', id:'mpc', expanded: false, leaf: true, children: [] 
+		        		});
+	        	}else if(menulist[i] == 'VoLte端到端信令回溯'){
+		        		chilNodes.push({ text: 'VoLte端到端信令回溯', id:'us', expanded: false, leaf: true, children: [] 
+		        		 });
+	          	}else if(menulist[i] == '系统管理'){
+		          		chilNodes.push({ text: '系统管理', id:'admin', expanded: true, children: [
+				        		                     			    	                { text: '系统管理', children: [
+				        		                    										    	                { text: '系统管理1', leaf: true },
+				        		                    										    	                { text: '系统管理2', leaf: true}
+				        		                    									    	                ] 
+				        		                    									    	                },
+				        		                    			    	                { text: '用户管理', children: [
+				        		                    										    	                { text: '用户管理1', leaf: true },
+				        		                    										    	                { text: '用户管理2', leaf: true}
+				        		                    									    	                ] 
+				        		                    									    	                }
+				        		                    		    	                ] 
+		        		});
+	            }
+    	}
+    	var treeStore = Ext.create('Ext.data.TreeStore', {
+    	    root: {
+    	        expanded: true,
+    	        children: [
+		    	            { text: 'EOP', id:'eop', expanded: true, children: [{ text: 'VoLte', id:'volte', expanded: true, children: chilNodes }] }
+		    	          ]
+    	    }
+    	});
+    	
+    	this.lookupReference('treepanel').bindStore(treeStore);
+    },
+    lk_tree_onClick: function(v,r,item){  
+    	
+    	var tabpanel = this.lookupReference('tabpanel');
+    	
+    	var n = tabpanel.getComponent(r.raw.id);  
+    	
+    	if(r.raw.id=='ov'){  
+			if (n == undefined) {
+				var newTab = tabpanel.add({
+	           		id : r.raw.id,  
+	                title : r.raw.text, 
+       	            xtype: 'oVPanel',
+	       	        autoDestroy:true,
+       	            closable: true
+       	        });
+				tabpanel.setActiveTab(newTab);
+	    	}else{
+	    		tabpanel.setActiveTab(n);
+	    	}
+       }else if(r.raw.id=='st'){
+	      	if (n == undefined) {
+				var newTab = tabpanel.add({
+					id : r.raw.id,  
+	                title : r.raw.text, 
+	   	            xtype: 'sTPanel',
+	   	            autoDestroy:true,
+	   	            closable: true
+	   	        });
+				tabpanel.setActiveTab(newTab);
+	    	}else{
+	    		tabpanel.setActiveTab(n);
+	    	}
+       }else if(r.raw.id=='mpc'){
+    	   if (n == undefined) {
+				var newTab = tabpanel.add({
+					id : r.raw.id,  
+	                title : r.raw.text, 
+	   	            xtype: 'mPCPanel',
+	   	            autoDestroy:true,
+	   	            closable: true
+	   	        });
+				tabpanel.setActiveTab(newTab);
+	    	}else{
+	    		tabpanel.setActiveTab(n);
+	    	}
+       }else if(r.raw.id=='us'){
+    	   if (n == undefined) {
+				var newTab = tabpanel.add({
+	           		id : r.raw.id,  
+	                title : r.raw.text, 
+	   	            xtype: 'uSPanel',
+	   	            autoDestroy:true,
+	   	            closable: true
+	   	        });
+				tabpanel.setActiveTab(newTab);
+	    	}else{
+	    		tabpanel.setActiveTab(n);
+	    	}
+       }else if(r.raw.id=='admin'){
+       	
+       }else{
+    	   return;  
+       }
+     },
+     gfn_getPanelElement: function (me,reference) {
+    	 if(!isEmpty(me.lookupReference(reference))){
+    		 var el = me.lookupReference(reference).el.dom.childNodes[0].childNodes[0];
+		 }
+    	 return el;
+     },
+     gfn_getInnerElement: function (me,reference,i) {
+    	 if(i == null){
+    		 if(!isEmpty(me.lookupReference(reference))){
+    			 var el = me.lookupReference(reference).body.dom.childNodes[0].childNodes[0].childNodes[0];
+    		 }
+    	 }else{
+    		 if(!isEmpty(me.lookupReference(reference))){
+    			 var el = me.lookupReference(reference).body.dom.childNodes[0].childNodes[0].childNodes[i];
+    		 }
+    	 }
+    	 return el;
+     }
+});
