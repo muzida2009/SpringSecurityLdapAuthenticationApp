@@ -154,7 +154,7 @@ Ext.define('voLte.view.main.MainController', {
 	           		id : r.raw.id,
 	                title : r.raw.text,
        	            xtype: 'oVPanel',
-		    		autoDestroy:true,
+		    autoDestroy:true,
        	            closable: true
        	        });
 			tabpanel.setActiveTab(newTab);
@@ -167,7 +167,7 @@ Ext.define('voLte.view.main.MainController', {
 					id : r.raw.id,
 	                title : r.raw.text,
 	   	            xtype: 'mPCPanel',
-			    	autoDestroy:true,
+			    autoDestroy:true,
 	   	            closable: true
 	   	        });
 				tabpanel.setActiveTab(newTab);
@@ -180,7 +180,7 @@ Ext.define('voLte.view.main.MainController', {
 		           		id : r.raw.id,
 		                title : r.raw.text,
 		   	            xtype: 'uSPanel',
-				    	autoDestroy:true,
+				    autoDestroy:true,
 		   	            closable: true
 		   	        });
 					tabpanel.setActiveTab(newTab);
